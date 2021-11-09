@@ -53,50 +53,51 @@ dec_dic = { '.-' : 'A',
 ')':')',
 ':':':',
 '+':'+',
-'\n' :'\n'  
+'\n' :'\n',
+'/':' ',
+'':''  
 }
-
+#'-':'-',
+#'.':'.',
 enc_dic = {}
 for k, v in dec_dic.items():
 	enc_dic[v] = k
 
+f = open(input_filepath,'r',encoding='utf-8')
+how = f.read()
+f.seek(0)
+f.close()
 
-choose = input("어떤 타입으로 인코딩하시겠습니까? 1:모스식 부호 2.시저+3 3. 16진수")
-
-
-
-if choose == '1':
+if 'Morse Code' in how:
 	f = open(input_filepath,'r',encoding='utf-8')
+	f.seek(11)
 	f2 = open(output_filepath,'w',encoding='utf-8')
 	f3 = open(result_filepath,'w',encoding='utf-8')
 	file_contents = f.read()
-	words = str(file_contents)
+	words = file_contents
+	
 	allstr = []
-	#암호화 기능
-	for j in words:
-		j = f'{j}'
-		if j == '\n':
-			allstr.append(j)
-		else: 
-			allstr.append(str(enc_dic[j.upper()]))
-	str1 = ''.join(allstr)
-	f2.write(str1)
-	#복호화 기능
-	allstr2 =[]
-	for k in allstr:
-		k = f'{k}'
-		if k == '\n':
-			allstr2.append(k)
-		else:
-			allstr2.append(str(dec_dic[k]).lower())
-	str2 = ''.join(allstr2)
-	f3.write(str2)
+	allstr = words.split('/ ')
+	#print(allstr[0].strip())
+	allstr2 = []
+	str1 = []
+	for i in allstr:
+		str1 = i.split(' ')
+		#print(str1[0])
+		for j in str1:
+			print(j)
+			#j = j.strip()
+			allstr2.append(dec_dic[j])
+		allstr2.append(' ')
+	str123 = ''.join(allstr2)
+	f2.write(str123)
 	f.close()
 	f2.close()
 	f3.close()
 #############시저암호부분
-elif choose=='2':
+elif 'Caesar' in how:
 	f = open(input_filepath,'r',encoding='utf-8')
+	f.seek(18)
 	f2 = open(output_filepath,'w',encoding='utf-8')
 	f3 = open(result_filepath,'w',encoding='utf-8')
 	file_contents = f.read()
@@ -110,30 +111,12 @@ elif choose=='2':
 			allstr[j] = '\n'
 			continue
 		if allstr[j].isupper():
-			allstr[j] = chr((ord(allstr[j])-ord('A')+3)%26+ord('A'))
+			allstr[j] = chr((ord(allstr[j])-ord('A')-3)%26+ord('A'))
 		elif allstr[j].islower(): 
-			allstr[j] = chr((ord(allstr[j])-ord('a')+3)%26+ord('a'))
+			allstr[j] = chr((ord(allstr[j])-ord('a')-3)%26+ord('a'))
 	str1 = ''.join(allstr)
 	f2.write(str1)
 
-
-	#복호화 기능
-	allstr2 =[]
-	for j in range(len(allstr)):
-		if allstr[j] == ' ':
-			allstr2.append(' ')
-			continue
-		if allstr[j] == '\n':
-			allstr2.append('\n')
-			continue
-		if allstr[j].isupper():
-			allstr2.append(chr((ord(allstr[j])-ord('A')-3)%26+ord('A')))
-		elif allstr[j].islower(): 
-			allstr2.append(chr((ord(allstr[j])-ord('a')-3)%26+ord('a')))
-		else:
-			allstr2.append(allstr[j])
-	str2 = ''.join(allstr2)
-	f3.write(str2)
 	f.close()
 	f2.close()
 	f3.close()
@@ -141,37 +124,19 @@ elif choose=='2':
 
 
 
-#16진수로 암/복호화
-if choose == '3':
-	f = open(input_filepath,'r',encoding='utf-8')
-	f2 = open(output_filepath,'w',encoding='utf-8')
-	f3 = open(result_filepath,'w',encoding='utf-8')
-	file_contents = f.read()
+# 16진수로 암/복호화
+if 'Hex' in how:
+    f = open(input_filepath, 'r', encoding='utf-8')
+    f.seek(4)
+    f2 = open(output_filepath, 'w', encoding='utf-8')
+    f3 = open(result_filepath, 'w', encoding='utf-8')
+    file_contents = f.read()
 
-	words = str(file_contents)
-	
-	#allstr = []
-	allstr = list(words)
-	#암호화 기능
-	for j in range(len(allstr)):
-		str1 = allstr[j]
-		str11 = ord(str1)
-		str111 = hex(str11)
-		allstr[j] = str111
-	str1 = ''.join(allstr)
-	f2.write(str1)
+    words = file_contents.split(' ')
 
+    for word in words:
+        f2.write(chr(int(word, 16)))
 
-	#복호화 기능
-	allstr2 =[]
-	for j in range(len(allstr)):
-		str12 = ast.literal_eval(allstr[j])
-		str2 = chr(str12)
-		allstr2.append(str2)
-	str2 = ''.join(allstr2)
-	f3.write(str2)
-	f.close()
-	f2.close()
-	f3.close()
-
-
+    f.close()
+    f2.close()
+    f3.close()
